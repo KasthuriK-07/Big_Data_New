@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Data, PySpark & Spark ML - MCQ Quiz</title>
+<style>
+:root{--ink:#172033;--muted:#64748b;--line:#dbe3ef;--bg:#f4f7fb;--card:#fff;--blue:#2457c5;--green:#137a48;--red:#b42318}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{background:linear-gradient(120deg,#13264b,#2457c5);color:white;padding:32px 18px}
+.wrap{max-width:980px;margin:auto;padding:0 16px}h1{margin:0 0 8px;font-size:clamp(24px,4vw,36px)}header p{margin:0;color:#e5edff}
+main{padding:24px 0 48px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:16px}
+.pill{background:#e7edfb;color:#21489b;border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700}
+select,button{font:inherit;border-radius:10px;padding:10px 14px;border:1px solid var(--line);background:white;color:var(--ink)}
+button{cursor:pointer;font-weight:650}button.primary{background:var(--blue);color:white;border-color:var(--blue)}button:disabled{opacity:.5;cursor:not-allowed}
+.progress{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin:12px 0 20px}.bar{height:100%;width:0;background:#4b78df;transition:width .2s}
+.question{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin:14px 0;box-shadow:0 3px 12px #0f172a08}
+.qhead{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:8px}.topic{font-size:12px;font-weight:750;color:var(--blue);text-transform:uppercase;letter-spacing:.06em}
+.qnum{font-size:13px;color:var(--muted)}h2{font-size:18px;margin:8px 0 14px}
+.option{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:8px 0;cursor:pointer}
+.option:hover{border-color:#8ba8ed;background:#f8faff}.option input{margin-top:5px;accent-color:var(--blue)}
+.option.correct{border-color:#68b58b;background:#effaf3}.option.wrong{border-color:#e49b96;background:#fff3f2}
+.question-actions{display:flex;justify-content:flex-end;margin-top:12px}
+.show-answer-btn{background:#eef3ff;color:#21489b;border-color:#b9c9f2}
+.feedback{display:none;margin-top:12px;padding:12px;border-radius:10px;background:#f1f5f9;font-size:14px}.feedback.show{display:block}.feedback strong{display:block;margin-bottom:3px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}.result{display:none;background:white;border:1px solid var(--line);border-radius:16px;padding:22px;margin:20px 0}.result.show{display:block}.score{font-size:34px;font-weight:800;color:var(--blue)}
+.small{font-size:13px;color:var(--muted)}.hidden{display:none!important}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:20px}
+@media(max-width:600px){.question{padding:15px}.qhead{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<h1>Big Data, PySpark & Spark ML</h1>
+<p>Interactive multiple-choice practice quiz • 39 questions • Answers and explanations included</p>
+</div></header>
+<main class="wrap">
+<div class="toolbar">
+  <span class="pill" id="count">39 questions</span>
+  <label class="small">Filter topic:
+    <select id="topicFilter"><option value="All">All topics</option></select>
+  </label>
+  <button id="resetTop">Reset quiz</button>
+</div>
+<div class="progress"><div class="bar" id="progressBar"></div></div>
+<div id="quiz"></div>
+<div class="actions">
+  <button class="primary" id="submitBtn">Submit answers & show score</button>
+  <button id="showAllBtn">Reveal all answers</button>
+  <button id="resetBtn">Restart quiz</button>
+</div>
+<section class="result" id="result" aria-live="polite">
+  <div class="small">Your result</div><div class="score" id="score"></div>
+  <p id="summary"></p>
+  <p class="small" id="breakdown"></p>
+</section>
+</main>
+<footer>Study practice based on the supplied Big Data overview, PySpark introduction, RDD, Spark ML and ML regression materials, plus the VectorAssembler examples discussed.</footer>
+<script>
+const questions = [{"topic": "Big Data", "question": "Which V describes the size or amount of data?", "options": ["Velocity", "Volume", "Variety", "Veracity"], "answer": 1, "explanation": "Volume measures the size or amount of data."}, {"topic": "Big Data", "question": "Which V refers to the speed at which applications generate data?", "options": ["Value", "Variety", "Velocity", "Veracity"], "answer": 2, "explanation": "Velocity describes the speed of data generation."}, {"topic": "Big Data", "question": "Structured, semi-structured, and unstructured data are examples of which Big Data characteristic?", "options": ["Variety", "Volume", "Value", "Velocity"], "answer": 0, "explanation": "Variety refers to the different forms and types of data."}, {"topic": "Big Data", "question": "Which Big Data characteristic is concerned with whether data is safe and trustworthy?", "options": ["Volume", "Value", "Veracity", "Velocity"], "answer": 2, "explanation": "Veracity concerns data quality, reliability, and trustworthiness."}, {"topic": "Big Data", "question": "Which characteristic asks whether data can provide business benefit?", "options": ["Variety", "Value", "Veracity", "Volume"], "answer": 1, "explanation": "Value is the business benefit obtained from data."}, {"topic": "Big Data", "question": "According to the course material, when can data be considered big data for an organization?", "options": ["Only when it is stored in the cloud", "When the organization's system cannot handle that amount of data", "Only when it contains images", "Only when it is generated daily"], "answer": 1, "explanation": "The material describes data as big for an organization when its system cannot handle the specific amount."}, {"topic": "Big Data", "question": "In the analytics process diagram, which stage follows data sources?", "options": ["Data analysis", "ETL/ELT pipelines", "Reporting", "Data visualization"], "answer": 1, "explanation": "The diagram shows data sources feeding ETL/ELT pipelines."}, {"topic": "Big Data", "question": "What does ETL stand for?", "options": ["Extract, Transform, Load", "Evaluate, Transfer, Link", "Encode, Transform, Learn", "Extract, Test, Launch"], "answer": 0, "explanation": "ETL means Extract, Transform, Load."}, {"topic": "Big Data", "question": "Which Hadoop component is responsible for distributed storage?", "options": ["YARN", "MapReduce", "HDFS", "Hive"], "answer": 2, "explanation": "HDFS is the Hadoop Distributed File System and storage component."}, {"topic": "Big Data", "question": "Which Hadoop component is identified as the processing unit?", "options": ["HDFS", "MapReduce", "YARN", "HBase"], "answer": 1, "explanation": "MapReduce is identified as the processing unit in the course material."}, {"topic": "Big Data", "question": "What is the primary role of YARN in Hadoop?", "options": ["Resource management", "File compression", "SQL querying", "Data visualization"], "answer": 0, "explanation": "YARN means Yet Another Resource Negotiator and manages cluster resources."}, {"topic": "Big Data", "question": "Which analytics type answers the question 'What happened?'", "options": ["Predictive", "Prescriptive", "Diagnostic", "Descriptive"], "answer": 3, "explanation": "Descriptive analytics summarizes what happened and when."}, {"topic": "Big Data", "question": "Which analytics type investigates why something happened?", "options": ["Diagnostic", "Descriptive", "Predictive", "Prescriptive"], "answer": 0, "explanation": "Diagnostic analytics looks for patterns and relationships to explain why/how."}, {"topic": "Big Data", "question": "Which analytics type uses historical data to estimate what may happen in the future?", "options": ["Descriptive", "Predictive", "Diagnostic", "Prescriptive"], "answer": 1, "explanation": "Predictive analytics uses historical patterns to make forecasts."}, {"topic": "Big Data", "question": "Which analytics type recommends what action should be taken?", "options": ["Diagnostic", "Descriptive", "Prescriptive", "Predictive"], "answer": 2, "explanation": "Prescriptive analytics provides recommendations about what should be done."}, {"topic": "Big Data", "question": "In the supplied use cases, which company uses Big Data to improve its recommender engine?", "options": ["Marriott", "GE", "Amazon", "American Express"], "answer": 2, "explanation": "The course material associates Amazon with improving its recommender engine."}, {"topic": "PySpark & RDD", "question": "What is PySpark?", "options": ["A Python interface for Apache Spark", "A relational database", "A Hadoop file format", "A Python web framework"], "answer": 0, "explanation": "PySpark provides a Python interface/API for working with Spark."}, {"topic": "PySpark & RDD", "question": "Which capability is listed as supported by PySpark?", "options": ["Only spreadsheet formulas", "Spark SQL and MLlib", "Only browser automation", "Only relational transactions"], "answer": 1, "explanation": "The slides list DataFrame, Streaming, MLlib, Spark Core, and Spark SQL support."}, {"topic": "PySpark & RDD", "question": "What does RDD stand for?", "options": ["Rapid Data Driver", "Resilient Distributed Dataset", "Remote Data Directory", "Replicated Database Design"], "answer": 1, "explanation": "RDD stands for Resilient Distributed Dataset."}, {"topic": "PySpark & RDD", "question": "Which statement best describes an RDD?", "options": ["A mutable single-machine table", "An immutable distributed collection that can be processed in parallel", "A SQL database server", "A visualization object"], "answer": 1, "explanation": "The course defines an RDD as an immutable distributed collection of objects processed in parallel."}, {"topic": "PySpark & RDD", "question": "Which operation can create an RDD from an existing Python collection?", "options": ["parallelize()", "collect()", "show()", "fit()"], "answer": 0, "explanation": "SparkContext.parallelize() distributes an existing collection into an RDD."}, {"topic": "PySpark & RDD", "question": "What does getNumPartitions() return?", "options": ["Number of records", "Number of columns", "Number of partitions in an RDD", "Number of Spark applications"], "answer": 2, "explanation": "getNumPartitions() reports how many partitions the RDD has."}, {"topic": "PySpark & RDD", "question": "Which operation returns all elements of an RDD to the driver as a Python collection?", "options": ["filter()", "collect()", "map()", "distinct()"], "answer": 1, "explanation": "collect() brings all RDD elements to the driver; use it carefully with large data."}, {"topic": "PySpark & RDD", "question": "Which RDD transformation applies a function to each element?", "options": ["count()", "first()", "map()", "collect()"], "answer": 2, "explanation": "map() transforms each RDD element using the supplied function."}, {"topic": "PySpark & RDD", "question": "Which operation keeps only elements that satisfy a condition?", "options": ["filter()", "reduce()", "take()", "first()"], "answer": 0, "explanation": "filter() returns elements for which the predicate is true."}, {"topic": "PySpark & RDD", "question": "What is the key difference between coalesce() and repartition() in the supplied notebook notes?", "options": ["coalesce always increases partitions", "repartition never shuffles", "coalesce can reduce partitions without a full shuffle; repartition involves a shuffle", "Both always remove all partitions"], "answer": 2, "explanation": "The notebook notes describe coalesce as avoiding a shuffle for reducing partitions, while repartition involves shuffling."}, {"topic": "Spark ML", "question": "What is the purpose of StringIndexer?", "options": ["Convert categorical values into numeric indices", "Scale values to the range 0–1", "Combine columns into a vector", "Split data into train and test"], "answer": 0, "explanation": "StringIndexer learns category-to-index mappings from a column."}, {"topic": "Spark ML", "question": "What does OneHotEncoder do after StringIndexer?", "options": ["Converts numeric values into dates", "Converts category indices into binary feature vectors", "Combines all columns into a DataFrame", "Removes the target column"], "answer": 1, "explanation": "OneHotEncoder represents indexed categories as sparse binary vectors."}, {"topic": "Spark ML", "question": "In the supplied code, why is a stages list created?", "options": ["To store rows from the DataFrame", "To collect preprocessing estimators/transformers for a Pipeline", "To store model predictions", "To define the target values"], "answer": 1, "explanation": "The list holds the StringIndexer and OneHotEncoder stages so they can be assembled into a Pipeline."}, {"topic": "Spark ML", "question": "What does VectorAssembler do?", "options": ["Combines selected input columns into one vector column", "Converts a vector to a string", "Evaluates model accuracy", "Creates a Spark session"], "answer": 0, "explanation": "VectorAssembler combines numerical/vector input columns into a single feature vector."}, {"topic": "Spark ML", "question": "In the Boston Housing example, why are '_c0' and 'medv' excluded from inputCols?", "options": ["Both are categorical features", "'_c0' is an index and 'medv' is the prediction target", "Both contain missing values", "They are Spark configuration settings"], "answer": 1, "explanation": "The index is not a predictive feature, and medv is the label to predict."}, {"topic": "Spark ML", "question": "After VectorAssembler, which two columns are retained in vhouse_df?", "options": ["'_c0' and 'features'", "'features' and 'medv'", "'medv' and 'prediction'", "'label' and 'rawPrediction'"], "answer": 1, "explanation": "The code selects features and medv for the regression workflow."}, {"topic": "Spark ML", "question": "Why should a preprocessing Pipeline be fitted on training data and then applied to test data?", "options": ["To let test data determine category mappings", "To prevent test information from leaking into preprocessing", "To increase the number of test rows", "To remove the label column automatically"], "answer": 1, "explanation": "Fitting preprocessing only on training data helps prevent data leakage."}, {"topic": "Spark ML", "question": "What does randomSplit([0.7, 0.3]) generally request?", "options": ["70% training and 30% testing data", "30% training and 70% testing data", "Equal training and testing data", "Three separate datasets"], "answer": 0, "explanation": "The weights request an approximately 70/30 split."}, {"topic": "Spark ML", "question": "Which PySpark ML estimator is used in the notebook to predict the continuous 'medv' value?", "options": ["LogisticRegression", "LinearRegression", "NaiveBayes", "KMeans"], "answer": 1, "explanation": "LinearRegression is used for the Boston Housing continuous target."}, {"topic": "Spark ML", "question": "Which evaluator metric is commonly used to measure regression prediction error in the supplied notebook?", "options": ["areaUnderROC", "accuracy", "rmse", "weightedRecall"], "answer": 2, "explanation": "RMSE is a regression metric measuring the square root of mean squared prediction error."}, {"topic": "Spark ML", "question": "Which evaluator is appropriate for a binary classification ROC-AUC calculation?", "options": ["RegressionEvaluator", "BinaryClassificationEvaluator", "MulticlassClassificationEvaluator", "ClusteringEvaluator"], "answer": 1, "explanation": "BinaryClassificationEvaluator supports metrics such as areaUnderROC."}, {"topic": "Spark ML", "question": "What is the purpose of MinMaxScaler in the Naive Bayes workflow?", "options": ["Scale feature values to a specified range", "Convert labels into strings", "Create RDD partitions", "Calculate feature importance"], "answer": 0, "explanation": "MinMaxScaler rescales feature vectors; in Spark its default range is 0 to 1."}, {"topic": "Spark ML", "question": "What does the error 'Output column scaledFeatures already exists' indicate?", "options": ["The input DataFrame has no features", "The output column is already present in the DataFrame", "The label column is a string", "The Spark session has stopped"], "answer": 1, "explanation": "The transformer cannot create an output column with a name that already exists; drop or rename it first."}];
+const quizEl=document.getElementById('quiz'), filter=document.getElementById('topicFilter');
+const topics=['All',...new Set(questions.map(q=>q.topic))];
+topics.slice(1).forEach(t=>{const o=document.createElement('option');o.value=t;o.textContent=t;filter.appendChild(o)});
+let submitted=false;
+function render(){
+  submitted=false;document.getElementById('result').classList.remove('show');
+  const selected=filter.value;
+  const visible=questions.map((q,i)=>({...q,index:i})).filter(q=>selected==='All'||q.topic===selected);
+  document.getElementById('count').textContent=visible.length+' questions';
+  quizEl.innerHTML='';
+  visible.forEach((q,n)=>{
+    const card=document.createElement('article');card.className='question';card.dataset.index=q.index;
+    const opts=q.options.map((op,j)=>`<label class="option" data-option="${j}">
+      <input type="radio" name="q${q.index}" value="${j}">
+      <span><b>${String.fromCharCode(65+j)}.</b> ${escapeHtml(op)}</span></label>`).join('');
+    card.innerHTML=`<div class="qhead"><span class="topic">${escapeHtml(q.topic)}</span><span class="qnum">Question ${n+1} of ${visible.length}</span></div>
+      <h2>${escapeHtml(q.question)}</h2><div class="options">${opts}</div>
+      <div class="question-actions">
+        <button type="button" class="show-answer-btn" data-show-answer="${q.index}" disabled>Show answer</button>
+      </div>
+      <div class="feedback" id="fb${q.index}"></div>`;
+    quizEl.appendChild(card);
+  });
+  document.getElementById('progressBar').style.width='0%';
+  updateProgress();
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function updateProgress(){
+ const cards=[...document.querySelectorAll('.question')];
+ const done=cards.filter(c=>c.querySelector('input:checked')).length;
+ document.getElementById('progressBar').style.width=(cards.length?done/cards.length*100:0)+'%';
+}
+quizEl.addEventListener('change', (event) => {
+  updateProgress();
+  const card = event.target.closest('.question');
+  if (card && event.target.matches('input[type="radio"]')) {
+    const button = card.querySelector('.show-answer-btn');
+    if (button) button.disabled = false;
+  }
+});
+quizEl.addEventListener('click', (event) => {
+  const button = event.target.closest('.show-answer-btn');
+  if (!button) return;
+  const card = button.closest('.question');
+  const idx = Number(button.dataset.showAnswer);
+  const q = questions[idx];
+  const chosen = card.querySelector('input:checked');
+  if (!chosen) return;
+  const chosenIndex = Number(chosen.value);
+  const isCorrect = chosenIndex === q.answer;
+  card.querySelectorAll('.option').forEach((el, j) => {
+    el.classList.remove('correct','wrong');
+    if (j === q.answer) el.classList.add('correct');
+    if (j === chosenIndex && !isCorrect) el.classList.add('wrong');
+  });
+  const fb = document.getElementById('fb' + idx);
+  fb.innerHTML = `<strong>${isCorrect ? 'Correct' : 'Incorrect'} — Answer: ${String.fromCharCode(65+q.answer)}. ${escapeHtml(q.options[q.answer])}</strong>${escapeHtml(q.explanation)}`;
+  fb.classList.add('show');
+  button.disabled = true;
+  button.textContent = 'Answer shown';
+});
+function grade(revealOnly=false){
+ submitted=true;
+ const cards=[...document.querySelectorAll('.question')];let correct=0,answered=0;const topicStats={};
+ cards.forEach(card=>{
+   const idx=Number(card.dataset.index),q=questions[idx],chosen=card.querySelector('input:checked');
+   if(chosen)answered++;
+   const isCorrect=chosen&&Number(chosen.value)===q.answer;
+   if(isCorrect)correct++;
+   topicStats[q.topic]??={right:0,total:0};topicStats[q.topic].total++;
+   if(isCorrect)topicStats[q.topic].right++;
+   card.querySelectorAll('.option').forEach((el,j)=>{
+     el.classList.remove('correct','wrong');
+     if(j===q.answer)el.classList.add('correct');
+     if(chosen&&j===Number(chosen.value)&&j!==q.answer)el.classList.add('wrong');
+     el.querySelector('input').disabled=true;
+   });
+   const fb=document.getElementById('fb'+idx);
+   fb.innerHTML=`<strong>${isCorrect?'Correct':chosen?'Not quite':'Not answered'} — Answer: ${String.fromCharCode(65+q.answer)}. ${escapeHtml(q.options[q.answer])}</strong>${escapeHtml(q.explanation)}`;
+   fb.classList.add('show');
+ });
+ const result=document.getElementById('result');result.classList.add('show');
+ document.getElementById('score').textContent=`${correct} / ${cards.length} (${Math.round(correct/cards.length*100)}%)`;
+ document.getElementById('summary').textContent=`You answered ${answered} of ${cards.length} questions. ${cards.length-answered} were left unanswered.`;
+ document.getElementById('breakdown').textContent=Object.entries(topicStats).map(([t,s])=>`${t}: ${s.right}/${s.total}`).join('  •  ');
+ document.getElementById('submitBtn').disabled=true;document.getElementById('showAllBtn').disabled=true;
+ result.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function reset(){filter.value='All';document.getElementById('submitBtn').disabled=false;document.getElementById('showAllBtn').disabled=false;render();window.scrollTo({top:0,behavior:'smooth'});}
+document.getElementById('submitBtn').addEventListener('click',()=>grade(false));
+document.getElementById('showAllBtn').addEventListener('click',()=>grade(true));
+document.getElementById('resetBtn').addEventListener('click',reset);
+document.getElementById('resetTop').addEventListener('click',reset);
+filter.addEventListener('change',()=>{document.getElementById('submitBtn').disabled=false;document.getElementById('showAllBtn').disabled=false;render();});
+render();
+</script>
+</body></html>

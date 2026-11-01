@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Data, Hadoop, PySpark, RDD & Machine Learning — Classroom Notes & MCQs</title>
+<style>
+:root{--ink:#172033;--blue:#174ea6;--pale:#eef4ff;--line:#d7deea;--green:#e8f5e9;--orange:#fff4df}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;line-height:1.65;color:var(--ink);background:#f5f7fb}
+header{background:linear-gradient(120deg,#102b54,#2463a8);color:white;padding:34px 20px}
+header .wrap,main{max-width:1080px;margin:auto}h1{margin:0 0 8px;font-size:2.1rem}header p{margin:0;max-width:850px}
+main{padding:22px 16px 50px}.intro,.topic,.quiz{background:white;border:1px solid var(--line);border-radius:12px;padding:22px;margin:18px 0;box-shadow:0 2px 8px #18284a0a}
+h2{color:var(--blue);border-bottom:2px solid var(--pale);padding-bottom:8px;margin-top:0}h3{margin-bottom:5px;color:#233b62}h4{margin-bottom:4px}
+.note{background:var(--pale);border-left:4px solid var(--blue);padding:10px 13px;margin:12px 0;border-radius:4px}
+.real{background:var(--green);border-left:4px solid #34834a;padding:10px 13px;margin:12px 0;border-radius:4px}
+.warn{background:var(--orange);border-left:4px solid #d28a14;padding:10px 13px;margin:12px 0;border-radius:4px}
+table{width:100%;border-collapse:collapse;margin:12px 0}th,td{border:1px solid var(--line);padding:9px;text-align:left;vertical-align:top}th{background:var(--pale)}
+code,pre{background:#f0f3f8;border-radius:4px;padding:2px 5px}pre{padding:12px;overflow:auto}
+nav ul{columns:2;padding-left:20px}a{color:var(--blue)}.q{padding:13px 0;border-bottom:1px solid #e5e9f0}.q:last-child{border-bottom:0}.options{margin:5px 0 8px 18px}.answer{display:none;background:var(--green);padding:8px 10px;border-radius:5px;margin-top:7px}.showall .answer{display:block}button{background:var(--blue);color:white;border:0;border-radius:6px;padding:10px 14px;cursor:pointer;font-size:1rem}button.secondary{background:#40536e}.small{font-size:.92rem;color:#526078}footer{text-align:center;color:#647086;padding:20px}
+@media(max-width:650px){nav ul{columns:1}header h1{font-size:1.65rem}.topic,.quiz,.intro{padding:16px}table{font-size:.9rem}}
+@media print{body{background:white}.topic,.quiz,.intro{box-shadow:none;break-inside:avoid}button,nav{display:none}.answer{display:block}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<h1>Big Data, Hadoop & PySpark</h1>
+<p>Classroom notes, architecture, Hadoop, PySpark, RDD programming, Spark MLlib, real-time examples, code, and MCQs with answers.</p>
+</div></header>
+<main>
+<section class="intro">
+<h2>How to use these notes</h2>
+<p>Study one topic at a time. Focus on <b>what it is, why it is used, how it works, and a real-world example</b>. Use the MCQ section for revision. The notes cover Big Data fundamentals, Hadoop, HDFS, YARN, MapReduce, Apache Spark, PySpark RDDs and DataFrames, Spark SQL, machine learning with MLlib, and data formats.</p>
+<div class="note"><b>Learning path:</b> Big Data basics → architecture → Hadoop and HDFS → MapReduce and YARN → Spark and PySpark → RDDs → DataFrames and SQL → Machine Learning with MLlib.</div>
+<nav><h3>Contents</h3><ul>
+<li><a href="#basics">1. Big Data fundamentals</a></li>
+<li><a href="#architecture">2. Big Data architecture</a></li>
+<li><a href="#hadoop">3. Hadoop ecosystem</a></li>
+<li><a href="#hdfs">4. HDFS</a></li>
+<li><a href="#mapreduce">5. MapReduce and YARN</a></li>
+<li><a href="#spark">6. Apache Spark and PySpark</a></li>
+<li><a href="#rdd">7. RDD programming</a></li>
+<li><a href="#ml">8. Machine Learning with PySpark MLlib</a></li>
+<li><a href="#formats">9. Data formats and storage</a></li>
+<li><a href="#etl">10. ETL/ELT and Big Data pipelines</a></li>
+<li><a href="#quality">11. Data quality, security, governance</a></li>
+<li><a href="#usecases">12. Real-world Big Data and ML use cases</a></li>
+<li><a href="#commands">13. Hadoop and PySpark quick reference</a></li>
+<li><a href="#mcq">14. MCQs with answers</a></li>
+</ul></nav>
+</section>
+
+<section class="topic" id="basics"><h2>1. Big Data Fundamentals</h2>
+<h3>What is Big Data?</h3><p>Big Data refers to datasets whose size, speed, or complexity make traditional single-machine tools difficult or inefficient to use. Big Data systems distribute storage and processing across multiple machines.</p>
+<h3>The 5 Vs</h3><table><tr><th>V</th><th>Meaning</th><th>Example</th></tr>
+<tr><td>Volume</td><td>Amount of data</td><td>A retailer stores billions of transaction records.</td></tr>
+<tr><td>Velocity</td><td>Speed at which data arrives and must be processed</td><td>Card transactions arrive every second.</td></tr>
+<tr><td>Variety</td><td>Different forms of data</td><td>Tables, JSON events, images, audio, logs.</td></tr>
+<tr><td>Veracity</td><td>Data quality, uncertainty, and trustworthiness</td><td>Duplicate customer profiles or missing values.</td></tr>
+<tr><td>Value</td><td>Useful outcomes obtained from data</td><td>Predicting demand to reduce stock-outs.</td></tr></table>
+<h3>Types of data</h3><ul><li><b>Structured:</b> fixed rows and columns, such as relational database tables.</li><li><b>Semi-structured:</b> has tags or keys but flexible structure, such as JSON, XML, and many logs.</li><li><b>Unstructured:</b> free-form text, images, audio, video, and documents.</li></ul>
+<h3>Traditional vs Big Data processing</h3><table><tr><th>Traditional approach</th><th>Distributed Big Data approach</th></tr><tr><td>Often scales up one server (vertical scaling).</td><td>Often scales out by adding machines (horizontal scaling).</td></tr><tr><td>May struggle with very high volume or velocity.</td><td>Partitions data and parallelizes work across a cluster.</td></tr><tr><td>Often relational and schema-first.</td><td>Can combine databases, files, events, and flexible schemas.</td></tr></table>
+<div class="real"><b>Real-world example:</b> A food-delivery platform receives app clicks, restaurant updates, GPS events, payments, and reviews. Data from applications and databases is stored in a data lake; Spark transforms it; dashboards show delivery times and demand.</div>
+</section>
+
+<section class="topic" id="architecture"><h2>2. Big Data Architecture</h2>
+<p>A common architecture separates ingestion, storage, processing, serving, and monitoring. Not every system needs every component.</p>
+<pre>Sources
+(apps, databases, devices, logs)
+          |
+          v
+Ingestion: batch file loads / database connectors / APIs
+          |
+          v
+Storage: HDFS / cloud object storage / data lake
+          |
+          v
+Processing: Spark / MapReduce / SQL engines
+          |
+          v
+Serving: warehouse / search / APIs / dashboards / ML
+          |
+          v
+Business decisions and applications
+
+Cross-cutting: security, metadata, quality, governance,
+orchestration, monitoring, access control</pre>
+<h3>Main layers</h3><ul><li><b>Sources:</b> applications, operational databases, IoT devices, files, and APIs.</li><li><b>Ingestion:</b> transfers data by batch or continuously as events arrive.</li><li><b>Storage:</b> keeps raw and processed data reliably and economically.</li><li><b>Processing:</b> cleans, joins, aggregates, enriches, and computes features.</li><li><b>Serving/consumption:</b> exposes results to dashboards, analysts, services, and models.</li><li><b>Operations:</b> monitors failures, latency, costs, lineage, and data quality.</li></ul>
+<h3>Batch vs streaming</h3><table><tr><th>Batch</th><th>Streaming</th></tr><tr><td>Processes a bounded collection on a schedule.</td><td>Processes events continuously or in short intervals.</td></tr><tr><td>Example: daily sales report.</td><td>Example: detect suspicious card activity within seconds.</td></tr><tr><td>Usually optimizes throughput and cost.</td><td>Often prioritizes low latency and event-time correctness.</td></tr></table>
+<h3>Data lake, warehouse, and lakehouse</h3><ul><li><b>Data lake:</b> stores large amounts of raw and curated data, often in open file formats.</li><li><b>Data warehouse:</b> optimized for governed analytics, SQL, and consistent business models.</li><li><b>Lakehouse:</b> combines lake-style storage with table management and warehouse-like reliability/performance features.</li></ul>
+<div class="note"><b>Architecture reminder:</b> HDFS is a distributed storage system, while Spark is a distributed processing engine. They have different responsibilities.</div>
+</section>
+
+<section class="topic" id="hadoop"><h2>3. Hadoop Ecosystem</h2>
+<p>Apache Hadoop is an open-source framework and ecosystem for distributed storage and processing. Core components are HDFS, YARN, and MapReduce.</p>
+<table><tr><th>Component</th><th>Purpose</th></tr><tr><td>HDFS</td><td>Distributed file storage with block replication.</td></tr><tr><td>YARN</td><td>Cluster resource management and application scheduling.</td></tr><tr><td>MapReduce</td><td>Batch processing model based on map and reduce stages.</td></tr><tr><td>Hadoop Common</td><td>Shared libraries and utilities used by Hadoop modules.</td></tr></table>
+<p>Other tools often found in the wider ecosystem include Hive (SQL-style analytics), HBase (NoSQL wide-column database), Sqoop (historically used for relational data transfer), and Oozie (historical workflow scheduling). Tool availability and current support vary by distribution.</p>
+<h3>Master/worker idea</h3><p>In HDFS, the NameNode manages filesystem metadata and DataNodes store blocks. In YARN, the ResourceManager coordinates cluster resources and NodeManagers manage resources on individual worker nodes. These are different responsibilities.</p>
+<div class="real"><b>Example:</b> A bank has 20 TB of historical transaction files. HDFS divides files into blocks and distributes replicas across nodes. A batch job can process partitions in parallel rather than reading everything from one computer.</div>
+</section>
+
+<section class="topic" id="hdfs"><h2>4. HDFS — Hadoop Distributed File System</h2>
+<h3>Key components</h3><ul><li><b>NameNode:</b> manages filesystem namespace and metadata, including file-to-block mappings and block locations.</li><li><b>DataNode:</b> stores actual data blocks and serves read/write requests.</li><li><b>Block:</b> a chunk of a file distributed across the cluster. Common configurations historically use 128 MB blocks, but sizes are configurable and depend on the environment.</li><li><b>Replication:</b> keeps multiple copies of blocks on different nodes/racks for fault tolerance.</li></ul>
+<h3>Read flow (simplified)</h3><ol><li>Client asks the NameNode for file metadata and block locations.</li><li>NameNode returns suitable DataNode locations.</li><li>Client reads the data directly from DataNodes.</li><li>If a DataNode fails, the client can try another available replica.</li></ol>
+<h3>Write flow (simplified)</h3><ol><li>Client requests file creation from the NameNode.</li><li>NameNode checks permissions and chooses a DataNode pipeline.</li><li>Client streams data to the first DataNode, which forwards it to the next replicas.</li><li>Acknowledgements flow back; metadata is updated.</li></ol>
+<div class="warn"><b>Important:</b> The NameNode manages metadata; it does not ordinarily receive every file byte and store the file content itself. DataNodes store the blocks. HDFS is optimized for large files and high-throughput access, not lots of tiny files or low-latency random updates.</div>
+<h3>Why doesn't DataNode data update the NameNode's file contents?</h3><p>Because the NameNode is the metadata manager, not the content store. DataNodes send heartbeats and block reports so the NameNode can track node health and which blocks exist. Actual file content remains on DataNodes.</p>
+<h3>HDFS command examples</h3><pre>hdfs dfs -ls /
+hdfs dfs -mkdir -p /demo
+hdfs dfs -put localfile.csv /demo/
+hdfs dfs -get /demo/localfile.csv .
+hdfs dfs -cat /demo/localfile.csv
+hdfs dfs -du -h /demo
+hdfs dfs -rm /demo/localfile.csv</pre>
+</section>
+
+<section class="topic" id="mapreduce"><h2>5. MapReduce and YARN</h2>
+<h3>MapReduce steps</h3><ol><li><b>Input splitting:</b> divides input into logical chunks.</li><li><b>Map:</b> transforms each record into intermediate key-value pairs.</li><li><b>Shuffle and sort:</b> groups intermediate values by key across the cluster.</li><li><b>Reduce:</b> aggregates or combines values for each key.</li><li><b>Output:</b> writes results to storage.</li></ol>
+<h3>Word-count example</h3><p>Input: <code>cat dog cat</code></p><ul><li>Map output: <code>(cat,1), (dog,1), (cat,1)</code></li><li>Shuffle/group: <code>cat → [1,1]</code>, <code>dog → [1]</code></li><li>Reduce output: <code>(cat,2), (dog,1)</code></li></ul>
+<h3>YARN components</h3><ul><li><b>ResourceManager:</b> global cluster resource and scheduling authority.</li><li><b>NodeManager:</b> runs on each worker node and manages containers and local resources.</li><li><b>ApplicationMaster:</b> coordinates a particular application and requests resources.</li><li><b>Container:</b> a bundle of allocated resources, such as memory and CPU, for application work.</li></ul>
+<div class="note"><b>Why use YARN?</b> It lets multiple processing frameworks share a cluster and helps allocate resources instead of every application independently controlling the entire cluster.</div>
+</section>
+
+
+
+<section class="topic" id="spark"><h2>6. Apache Spark and PySpark</h2>
+<p>Apache Spark is a distributed processing engine for batch analytics, SQL, streaming workloads, and machine learning. PySpark is its Python API.</p>
+<h3>Important concepts</h3><ul><li><b>SparkSession:</b> main entry point for DataFrame and SQL operations.</li><li><b>Driver:</b> runs the main application and coordinates execution.</li><li><b>Executors:</b> execute tasks and may cache data.</li><li><b>Cluster manager:</b> allocates resources (for example, Standalone, YARN, or Kubernetes).</li><li><b>Partition:</b> subset of distributed data processed in parallel.</li><li><b>Transformation:</b> defines a new dataset, such as <code>filter</code>, <code>select</code>, or <code>map</code>.</li><li><b>Action:</b> triggers computation or returns/writes results, such as <code>count</code>, <code>collect</code>, or <code>write</code>.</li></ul>
+<h3>Lazy evaluation</h3><p>Spark usually builds a logical execution plan for transformations and executes it when an action is called. This allows Spark to optimize the plan.</p>
+<h3>RDD vs DataFrame</h3><table><tr><th>RDD</th><th>DataFrame</th></tr><tr><td>Distributed collection of objects; lower-level API.</td><td>Distributed data with named columns and schema.</td></tr><tr><td>More manual control, but less SQL optimization.</td><td>Usually preferred for structured data due to Catalyst and execution optimizations.</td></tr><tr><td>Useful for lower-level transformations or legacy examples.</td><td>Useful for joins, aggregation, filtering, and SQL analytics.</td></tr></table>
+<h3>PySpark starter example</h3><pre>from pyspark.sql import SparkSession
+from pyspark.sql.functions import col
+
+spark = SparkSession.builder.appName("SalesAnalysis").getOrCreate()
+
+data = [
+    (1, "Asha", 1200),
+    (2, "Ravi", 800),
+    (3, "Meena", 1500)
+]
+df = spark.createDataFrame(data, ["order_id", "customer", "amount"])
+
+df.show()
+df.filter(col("amount") > 1000).show()
+df.groupBy().sum("amount").show()
+
+spark.stop()</pre>
+<h3>RDD word-count outline</h3><pre>rdd = sc.textFile("input.txt")
+counts = (rdd.flatMap(lambda line: line.lower().split())
+            .map(lambda word: (word, 1))
+            .reduceByKey(lambda a, b: a + b))
+counts.takeOrdered(10, key=lambda x: -x[1])</pre>
+<h3>Common Spark terms</h3><ul><li><b>Shuffle:</b> redistributes data across partitions, often for joins and aggregations; can be expensive.</li><li><b>Broadcast variable:</b> sends a read-only value efficiently to executors.</li><li><b>Broadcast join:</b> sends a small table to executors to avoid shuffling the large table when appropriate.</li><li><b>VectorAssembler:</b> combines feature columns into a single vector column for Spark ML.</li><li><b>Checkpointing:</b> saves intermediate state/data to reliable storage to truncate long lineage or support recovery.</li><li><b>local[*]:</b> in local mode, asks Spark to use available logical CPU cores on the current machine; it does not create a multi-machine cluster.</li></ul>
+<h3>SCD Type 1 and Type 2</h3><table><tr><th>Type 1</th><th>Type 2</th></tr><tr><td>Overwrite the old value; no history retained.</td><td>Keep historical versions, often with effective dates and a current-row flag.</td></tr><tr><td>Example: correct a misspelled customer name.</td><td>Example: retain a customer's past and current address for historical reporting.</td></tr></table>
+</section>
+
+
+<section class="topic" id="rdd"><h2>7. RDD Programming in PySpark</h2>
+<p><b>RDD (Resilient Distributed Dataset)</b> is Spark's fundamental low-level distributed data abstraction. It is an immutable collection of records distributed across partitions and processed in parallel across a cluster.</p>
+<h3>Why do we use RDD?</h3>
+<ul>
+<li><b>Resilient:</b> Spark can recompute lost partitions using lineage information.</li>
+<li><b>Distributed:</b> data is split into partitions across available workers.</li>
+<li><b>Immutable:</b> transformations create a new RDD instead of changing the existing RDD.</li>
+<li><b>Parallel processing:</b> operations can run on multiple partitions at the same time.</li>
+</ul>
+<div class="real"><b>Real-time example:</b> A company has millions of website log records. Spark can distribute the records across partitions, extract words or URLs, count visits, and calculate the most visited pages.</div>
+<h3>How an RDD works</h3>
+<pre>Input data
+    |
+    v
+Create RDD
+    |
+    v
+Split into partitions
+    |
+    v
+Transformations (map, filter, flatMap)
+    |
+    v
+Action (count, collect, reduce)
+    |
+    v
+Result</pre>
+<h3>Creating an RDD</h3>
+<pre>from pyspark.sql import SparkSession
+
+spark = SparkSession.builder.appName("RDD_Demo").getOrCreate()
+sc = spark.sparkContext
+
+numbers = [10, 20, 30, 40, 50]
+rdd = sc.parallelize(numbers)
+
+print(rdd.collect())</pre>
+<h3>Ways to create an RDD</h3>
+<pre># 1. From a Python collection
+rdd1 = sc.parallelize([1, 2, 3, 4, 5])
+
+# 2. From a text file
+rdd2 = sc.textFile("data/input.txt")
+
+# 3. From an existing DataFrame
+rdd3 = df.rdd</pre>
+<h3>RDD transformations</h3>
+<p>Transformations are lazy operations that create a new RDD. They are not executed immediately.</p>
+<table><tr><th>Transformation</th><th>Purpose</th><th>Example</th></tr>
+<tr><td>map()</td><td>Apply a function to every element.</td><td><code>rdd.map(lambda x: x * 2)</code></td></tr>
+<tr><td>filter()</td><td>Keep elements that satisfy a condition.</td><td><code>rdd.filter(lambda x: x &gt; 20)</code></td></tr>
+<tr><td>flatMap()</td><td>Apply a function and flatten the returned collections.</td><td><code>lines.flatMap(lambda x: x.split())</code></td></tr>
+<tr><td>distinct()</td><td>Return unique elements.</td><td><code>rdd.distinct()</code></td></tr>
+<tr><td>union()</td><td>Combine two RDDs.</td><td><code>rdd1.union(rdd2)</code></td></tr>
+<tr><td>sortBy()</td><td>Sort elements using a key function.</td><td><code>rdd.sortBy(lambda x: x)</code></td></tr>
+</table>
+<h3>RDD actions</h3>
+<p>Actions trigger execution and return a result to the driver or write data to external storage.</p>
+<table><tr><th>Action</th><th>Purpose</th><th>Example</th></tr>
+<tr><td>collect()</td><td>Return all elements to the driver.</td><td><code>rdd.collect()</code></td></tr>
+<tr><td>count()</td><td>Count elements.</td><td><code>rdd.count()</code></td></tr>
+<tr><td>first()</td><td>Return the first element.</td><td><code>rdd.first()</code></td></tr>
+<tr><td>take(n)</td><td>Return the first n elements.</td><td><code>rdd.take(3)</code></td></tr>
+<tr><td>reduce()</td><td>Combine elements using a function.</td><td><code>rdd.reduce(lambda a,b: a+b)</code></td></tr>
+<tr><td>saveAsTextFile()</td><td>Write RDD data to a directory.</td><td><code>rdd.saveAsTextFile("output")</code></td></tr>
+</table>
+<div class="warn"><b>Important:</b> Avoid using <code>collect()</code> on a very large RDD because all records are transferred to the driver and may cause memory errors. Use <code>take()</code> or distributed output operations when appropriate.</div>
+<h3>Word count using RDD</h3>
+<pre>lines = sc.parallelize([
+    "big data with spark",
+    "spark is distributed",
+    "big data processing"
+])
+
+words = lines.flatMap(lambda line: line.lower().split())
+pairs = words.map(lambda word: (word, 1))
+counts = pairs.reduceByKey(lambda a, b: a + b)
+
+for word, count in counts.collect():
+    print(word, count)</pre>
+<h3>Pair RDD operations</h3>
+<p>A pair RDD stores key-value pairs. It is useful for grouping and aggregation tasks.</p>
+<pre>sales = sc.parallelize([
+    ("Bangalore", 1000),
+    ("Chennai", 1500),
+    ("Bangalore", 2000),
+    ("Chennai", 500)
+])
+
+totals = sales.reduceByKey(lambda a, b: a + b)
+print(totals.collect())
+
+# Example output:
+# [('Bangalore', 3000), ('Chennai', 2000)]</pre>
+<h3>RDD vs DataFrame</h3>
+<table><tr><th>RDD</th><th>DataFrame</th></tr>
+<tr><td>Low-level distributed collection of objects.</td><td>Distributed data arranged in named columns.</td></tr>
+<tr><td>No enforced tabular schema.</td><td>Has a schema with column names and data types.</td></tr>
+<tr><td>Useful for custom low-level transformations.</td><td>Usually preferred for structured data and analytics.</td></tr>
+<tr><td>More manual optimization.</td><td>Uses Spark SQL optimizations.</td></tr>
+</table>
+</section>
+
+
+<section class="topic" id="ml"><h2>8. Machine Learning with PySpark MLlib</h2>
+<p><b>MLlib</b> is Apache Spark's machine learning library. It provides scalable algorithms and tools to prepare data, build pipelines, train models, and evaluate predictions on distributed datasets.</p>
+<h3>Why use machine learning with PySpark?</h3>
+<ul>
+<li>Process large datasets distributed across a Spark cluster.</li>
+<li>Prepare and transform features using Spark ML transformers.</li>
+<li>Train machine learning models using Spark ML estimators.</li>
+<li>Build repeatable workflows using ML Pipelines.</li>
+<li>Evaluate models using suitable metrics.</li>
+</ul>
+<div class="real"><b>Real-time example:</b> An online shopping company wants to predict whether a customer will purchase a product. Customer age, browsing time, previous purchases, and cart value can be used as features. PySpark can prepare the data, train a classification model, and predict purchase likelihood.</div>
+<h3>Machine Learning workflow</h3>
+<pre>Dataset
+   |
+   v
+Read data using Spark
+   |
+   v
+Data cleaning and preprocessing
+   |
+   v
+Feature selection
+   |
+   v
+VectorAssembler (features vector)
+   |
+   v
+Train-test split
+   |
+   v
+Choose ML algorithm
+   |
+   v
+Train model
+   |
+   v
+Predictions
+   |
+   v
+Model evaluation</pre>
+<h3>Important MLlib concepts</h3>
+<table><tr><th>Concept</th><th>Meaning</th></tr>
+<tr><td>Transformer</td><td>Transforms a DataFrame into another DataFrame using <code>transform()</code>.</td></tr>
+<tr><td>Estimator</td><td>Learns or fits a model from data using <code>fit()</code>.</td></tr>
+<tr><td>VectorAssembler</td><td>Combines multiple feature columns into one vector column.</td></tr>
+<tr><td>Pipeline</td><td>Chains preprocessing and model stages into one workflow.</td></tr>
+<tr><td>Training data</td><td>Data used to fit the model.</td></tr>
+<tr><td>Testing data</td><td>Unseen data used to evaluate model performance.</td></tr>
+<tr><td>Prediction</td><td>Output generated by a trained model.</td></tr>
+</table>
+<h3>Step 1: Read a dataset</h3>
+<pre>from pyspark.sql import SparkSession
+
+spark = SparkSession.builder.appName("SparkML").getOrCreate()
+
+data = spark.read.csv(
+    "data/heart.csv",
+    header=True,
+    inferSchema=True
+)
+
+data.printSchema()
+data.show(5)</pre>
+<h3>Step 2: Prepare features using VectorAssembler</h3>
+<p>Most Spark ML algorithms expect input features in a single vector column, commonly named <code>features</code>. VectorAssembler combines selected numeric columns into that vector.</p>
+<pre>from pyspark.ml.feature import VectorAssembler
+
+feature_cols = [
+    "age",
+    "cholesterol",
+    "blood_pressure"
+]
+
+assembler = VectorAssembler(
+    inputCols=feature_cols,
+    outputCol="features"
+)
+
+assembled_data = assembler.transform(data)
+assembled_data.select("features", "target").show(5, truncate=False)</pre>
+<div class="note"><b>Remember:</b> Do not include the target/label column in <code>inputCols</code>. Handle nulls and categorical columns before assembling features; categorical values may need StringIndexer and OneHotEncoder.</div>
+<h3>Step 3: Split data into training and testing sets</h3>
+<pre>train_data, test_data = assembled_data.randomSplit(
+    [0.8, 0.2],
+    seed=42
+)
+
+print("Training rows:", train_data.count())
+print("Testing rows:", test_data.count())</pre>
+<h3>Step 4: Train a Logistic Regression model</h3>
+<pre>from pyspark.ml.classification import LogisticRegression
+
+lr = LogisticRegression(
+    featuresCol="features",
+    labelCol="target"
+)
+
+lr_model = lr.fit(train_data)</pre>
+<h3>Step 5: Generate predictions</h3>
+<pre>predictions = lr_model.transform(test_data)
+
+predictions.select(
+    "target",
+    "prediction",
+    "probability"
+).show(10, truncate=False)</pre>
+<h3>Step 6: Evaluate the model</h3>
+<pre>from pyspark.ml.evaluation import (
+    BinaryClassificationEvaluator,
+    MulticlassClassificationEvaluator
+)
+
+accuracy_evaluator = MulticlassClassificationEvaluator(
+    labelCol="target",
+    predictionCol="prediction",
+    metricName="accuracy"
+)
+
+accuracy = accuracy_evaluator.evaluate(predictions)
+print("Accuracy:", accuracy)
+
+auc_evaluator = BinaryClassificationEvaluator(
+    labelCol="target",
+    rawPredictionCol="rawPrediction",
+    metricName="areaUnderROC"
+)
+
+auc = auc_evaluator.evaluate(predictions)
+print("AUC:", auc)</pre>
+<h3>Common ML algorithms available in Spark MLlib</h3>
+<table><tr><th>Algorithm</th><th>Type</th><th>Example use</th></tr>
+<tr><td>Linear Regression</td><td>Regression</td><td>Predict house prices.</td></tr>
+<tr><td>Logistic Regression</td><td>Classification</td><td>Predict customer churn.</td></tr>
+<tr><td>Decision Tree</td><td>Classification / Regression</td><td>Predict loan approval or prices.</td></tr>
+<tr><td>Random Forest</td><td>Classification / Regression</td><td>Fraud detection and risk prediction.</td></tr>
+<tr><td>Naive Bayes</td><td>Classification</td><td>Text categorization.</td></tr>
+<tr><td>K-Means</td><td>Clustering</td><td>Customer segmentation.</td></tr>
+<tr><td>GBT</td><td>Classification / Regression</td><td>Predictive modelling using boosted trees.</td></tr>
+</table>
+<h3>Regression vs Classification vs Clustering</h3>
+<ul>
+<li><b>Regression:</b> predicts a continuous numerical value, such as salary or house price.</li>
+<li><b>Classification:</b> predicts a category, such as spam/not spam or churn/not churn.</li>
+<li><b>Clustering:</b> groups similar records without predefined target labels, such as customer segments.</li>
+</ul>
+<h3>Important evaluation metrics</h3>
+<table><tr><th>Metric</th><th>Used for</th><th>Meaning</th></tr>
+<tr><td>Accuracy</td><td>Classification</td><td>Fraction of predictions that are correct.</td></tr>
+<tr><td>Precision</td><td>Classification</td><td>Among predicted positives, how many are correct.</td></tr>
+<tr><td>Recall</td><td>Classification</td><td>Among actual positives, how many are identified.</td></tr>
+<tr><td>F1-score</td><td>Classification</td><td>Harmonic mean of precision and recall.</td></tr>
+<tr><td>AUC</td><td>Binary classification</td><td>Measures ranking/discrimination across thresholds.</td></tr>
+<tr><td>RMSE</td><td>Regression</td><td>Root mean squared prediction error.</td></tr>
+<tr><td>R²</td><td>Regression</td><td>Explained variance relative to a baseline.</td></tr>
+<tr><td>Silhouette score</td><td>Clustering</td><td>Measures cluster cohesion and separation.</td></tr>
+</table>
+<h3>ML Pipeline concept</h3>
+<p>A Pipeline connects multiple stages, such as indexing categorical columns, assembling features, and fitting a model. It helps apply the same processing steps consistently during training and prediction.</p>
+<pre>from pyspark.ml import Pipeline
+from pyspark.ml.feature import VectorAssembler
+from pyspark.ml.classification import RandomForestClassifier
+
+assembler = VectorAssembler(
+    inputCols=["age", "cholesterol", "blood_pressure"],
+    outputCol="features"
+)
+
+rf = RandomForestClassifier(
+    featuresCol="features",
+    labelCol="target",
+    numTrees=50
+)
+
+pipeline = Pipeline(stages=[assembler, rf])
+pipeline_model = pipeline.fit(train_data)
+pipeline_predictions = pipeline_model.transform(test_data)</pre>
+<div class="warn"><b>Dataset note:</b> The sample code assumes the dataset has the listed columns, numeric feature values, a numeric label column, and no unresolved null values. Change column names and preprocessing to match your actual dataset. Model accuracy depends on data quality, features, algorithm, and evaluation method; it cannot be guaranteed in advance.</div>
+</section>
+
+<section class="topic" id="formats"><h2>9. Data Formats and Storage</h2>
+<table><tr><th>Format</th><th>Characteristics</th><th>Good fit</th></tr><tr><td>CSV</td><td>Plain text, row-oriented, broadly supported; types are not strongly embedded.</td><td>Simple exchange and small/medium tabular files.</td></tr><tr><td>JSON</td><td>Flexible nested key-value structure; verbose for large analytics workloads.</td><td>APIs and event payloads.</td></tr><tr><td>Avro</td><td>Row-oriented binary format with schema support and schema evolution features.</td><td>Event pipelines and record exchange.</td></tr><tr><td>Parquet</td><td>Columnar, compressed, efficient for reading selected columns.</td><td>Analytics and data lakes.</td></tr><tr><td>ORC</td><td>Columnar format with compression and indexing/statistics support.</td><td>Hive-oriented analytical storage.</td></tr></table>
+<h3>Why Parquet is often used for analytics</h3><ul><li>Columnar layout lets engines read only needed columns.</li><li>Compression can reduce storage and I/O.</li><li>Statistics can help skip irrelevant data.</li><li>It supports nested data and is used by many analytics engines.</li></ul>
+<div class="note"><b>Remember:</b> file format, storage system, and processing engine are different things. Parquet is a file format; HDFS/object storage stores files; Spark processes data.</div>
+</section>
+
+<section class="topic" id="etl"><h2>10. ETL/ELT and Big Data Pipelines</h2>
+<ul><li><b>Extract:</b> obtain data from databases, files, APIs, or event streams.</li><li><b>Transform:</b> clean types, remove duplicates, standardize values, join datasets, and derive metrics.</li><li><b>Load:</b> write processed data to a target system.</li></ul>
+<p><b>ETL</b> transforms before loading into the target. <b>ELT</b> loads raw data first and transforms within the destination platform. Both patterns are useful in different architectures.</p>
+<h3>Example daily sales pipeline</h3><ol><li>Extract orders and payment records from operational databases and files.</li><li>Validate required fields and deduplicate using a stable event/order ID.</li><li>Standardize timestamps and currencies.</li><li>Join orders with customer/product dimensions.</li><li>Write curated Parquet/table data partitioned by date.</li><li>Update dashboard tables and alert if data is late or quality checks fail.</li></ol>
+<h3>Pipeline design principles</h3><ul><li><b>Idempotency:</b> rerunning the same input should not create duplicate effects.</li><li><b>Retries:</b> retry temporary failures with limits and backoff.</li><li><b>Checkpointing:</b> save progress or intermediate results so processing can resume.</li><li><b>Schema evolution:</b> handle added/changed fields safely.</li><li><b>Observability:</b> monitor freshness, throughput, failures, lag, and data quality.</li><li><b>Orchestration:</b> schedule dependencies and retries with a workflow tool.</li></ul>
+</section>
+
+
+
+<section class="topic" id="quality"><h2>11. Data Quality, Security, and Governance</h2>
+<h3>Data quality dimensions</h3><ul><li><b>Completeness:</b> required values are present.</li><li><b>Accuracy:</b> values represent reality correctly.</li><li><b>Consistency:</b> systems agree on definitions and values.</li><li><b>Validity:</b> values follow allowed formats/ranges.</li><li><b>Uniqueness:</b> duplicate records are controlled.</li><li><b>Timeliness:</b> data arrives when needed.</li></ul>
+<h3>Security and governance practices</h3><ul><li>Least-privilege access and role-based permissions.</li><li>Encryption in transit and at rest where supported and required.</li><li>Protect credentials in secrets managers/environment configuration, not in source code.</li><li>Mask or minimize personal data; follow applicable policies and laws.</li><li>Maintain metadata, data lineage, ownership, retention rules, and audit logs.</li><li>Validate input and restrict network exposure.</li></ul>
+<h3>Reliability and scaling</h3><p>Distributed systems use partitioning, replication, retries, and monitoring to handle large workloads and failures. Replication improves availability but does not replace backups, governance, or recovery testing.</p>
+</section>
+
+<section class="topic" id="usecases"><h2>12. Real-World Big Data and ML Use Cases</h2>
+<table><tr><th>Industry</th><th>Data</th><th>Possible architecture/use</th></tr>
+<tr><td>Banking</td><td>Card transactions, login events, customer history</td><td>Kafka ingestion, stream rules/model scoring, alerts for suspicious patterns.</td></tr>
+<tr><td>E-commerce</td><td>Clicks, searches, orders, product views</td><td>Event stream + lake storage + Spark transformations + recommendation features.</td></tr>
+<tr><td>Healthcare</td><td>Appointments, lab results, device measurements</td><td>Secure ingestion, quality checks, governed analytics and operational dashboards.</td></tr>
+<tr><td>Transport</td><td>GPS pings, traffic, route events</td><td>Streaming aggregation to estimate congestion and arrival times.</td></tr>
+<tr><td>Manufacturing</td><td>Sensor readings and machine logs</td><td>Detect abnormal patterns and support predictive maintenance.</td></tr>
+<tr><td>Media</td><td>Views, searches, watch duration</td><td>Analyze engagement and build content recommendations.</td></tr></table>
+</section>
+
+<section class="topic" id="commands"><h2>13. Hadoop and PySpark Quick Reference</h2>
+<table><tr><th>Need</th><th>Remember</th></tr>
+<tr><td>List HDFS files</td><td><code>hdfs dfs -ls /path</code></td></tr>
+<tr><td>Create HDFS directory</td><td><code>hdfs dfs -mkdir -p /demo</code></td></tr>
+<tr><td>Upload a file to HDFS</td><td><code>hdfs dfs -put local.csv /demo/</code></td></tr>
+<tr><td>Download a file from HDFS</td><td><code>hdfs dfs -get /demo/local.csv .</code></td></tr>
+<tr><td>Read an HDFS file</td><td><code>hdfs dfs -cat /demo/local.csv</code></td></tr>
+<tr><td>Start a Spark session</td><td><code>SparkSession.builder.appName("Demo").getOrCreate()</code></td></tr>
+<tr><td>RDD transformation</td><td><code>rdd.map(lambda x: x * 2)</code></td></tr>
+<tr><td>RDD action</td><td><code>rdd.collect()</code> or <code>rdd.count()</code></td></tr>
+<tr><td>DataFrame filter</td><td><code>df.filter(col("amount") &gt; 100)</code></td></tr>
+<tr><td>DataFrame aggregation</td><td><code>df.groupBy("city").count()</code></td></tr>
+<tr><td>Combine ML feature columns</td><td><code>VectorAssembler(inputCols=feature_cols, outputCol="features")</code></td></tr>
+</table>
+<h3>Common misunderstandings</h3><ul>
+<li>HDFS NameNode stores metadata; DataNodes store file blocks.</li>
+<li>YARN manages cluster resources; HDFS manages distributed file storage.</li>
+<li>Map and Reduce are processing stages; shuffle and sort groups intermediate keys.</li>
+<li>Spark transformations are usually lazy; actions trigger execution.</li>
+<li>RDDs are lower-level distributed collections; DataFrames have named columns and a schema.</li>
+<li>More partitions can enable more parallelism but also add overhead.</li>
+<li>VectorAssembler combines multiple input columns into one feature vector for Spark ML.</li>
+<li>Parquet is a file format; HDFS is storage; Spark is a processing engine.</li>
+</ul></section>
+
+<section class="quiz" id="mcq"><h2>14. MCQ Practice — Questions with Answers</h2>
+<p>Try answering each question before revealing the answer. Use “Show all answers” for revision or print the page to create a study handout.</p>
+<button id="toggle" onclick="toggleAnswers()">Show all answers</button>
+<div id="questions"><div class="q"><b>1. Which of the following is NOT one of the classic 5 Vs of Big Data?</b><div class="options">A. Volume<br>B. Velocity<br>C. Veracity<br>D. Voltage</div><div class="answer"><b>Answer: D — Voltage. The classic 5 Vs are Volume, Velocity, Variety, Veracity, and Value.</b></div></div>
+<div class="q"><b>2. Which V describes how quickly data is generated and processed?</b><div class="options">A. Variety<br>B. Velocity<br>C. Value<br>D. Veracity</div><div class="answer"><b>Answer: B — Velocity.</b></div></div>
+<div class="q"><b>3. JSON is usually classified as:</b><div class="options">A. Only structured data<br>B. Semi-structured data<br>C. A database server<br>D. A processing engine</div><div class="answer"><b>Answer: B — Semi-structured data.</b></div></div>
+<div class="q"><b>4. What is the main purpose of distributed processing?</b><div class="options">A. Store every record on one CPU only<br>B. Split work across multiple machines<br>C. Remove the need for storage<br>D. Prevent all failures</div><div class="answer"><b>Answer: B — Split work across multiple machines.</b></div></div>
+<div class="q"><b>5. Which Hadoop component manages filesystem metadata?</b><div class="options">A. DataNode<br>B. NameNode<br>C. YARN<br>D. Spark executor</div><div class="answer"><b>Answer: B — NameNode.</b></div></div>
+<div class="q"><b>6. Where are HDFS file blocks stored?</b><div class="options">A. Only in the NameNode's RAM<br>B. DataNodes<br>C. YARN ResourceManager<br>D. Spark driver</div><div class="answer"><b>Answer: B — DataNodes.</b></div></div>
+<div class="q"><b>7. Why does HDFS replicate blocks?</b><div class="options">A. To change CSV into JSON<br>B. To improve fault tolerance and availability<br>C. To remove metadata<br>D. To force all reads through the NameNode</div><div class="answer"><b>Answer: B — To improve fault tolerance and availability.</b></div></div>
+<div class="q"><b>8. Which Hadoop component manages cluster resources?</b><div class="options">A. YARN<br>B. Parquet<br>C. HDFS block<br>D. Spark DataFrame</div><div class="answer"><b>Answer: A — YARN.</b></div></div>
+<div class="q"><b>9. In MapReduce, which stage groups intermediate values by key?</b><div class="options">A. Shuffle and sort<br>B. File upload<br>C. Model evaluation<br>D. Feature scaling</div><div class="answer"><b>Answer: A — Shuffle and sort.</b></div></div>
+<div class="q"><b>10. What is the result of word count for “red blue red”?</b><div class="options">A. red=1, blue=2<br>B. red=2, blue=1<br>C. red=3, blue=3<br>D. red=1, blue=1</div><div class="answer"><b>Answer: B — red=2, blue=1.</b></div></div>
+<div class="q"><b>11. What is PySpark?</b><div class="options">A. Python API for Apache Spark<br>B. A Hadoop filesystem<br>C. A file format<br>D. A database server</div><div class="answer"><b>Answer: A — Python API for Apache Spark.</b></div></div>
+<div class="q"><b>12. Which Spark object is the common entry point for DataFrame and SQL operations?</b><div class="options">A. SparkSession<br>B. NameNode<br>C. DataNode<br>D. VectorAssembler</div><div class="answer"><b>Answer: A — SparkSession.</b></div></div>
+<div class="q"><b>13. Which is a Spark transformation?</b><div class="options">A. filter()<br>B. count()<br>C. collect()<br>D. first()</div><div class="answer"><b>Answer: A — filter(). Transformations define a new dataset and are generally lazy.</b></div></div>
+<div class="q"><b>14. Which operation is an RDD action?</b><div class="options">A. map()<br>B. filter()<br>C. count()<br>D. flatMap()</div><div class="answer"><b>Answer: C — count(). Actions trigger execution.</b></div></div>
+<div class="q"><b>15. What does lazy evaluation mean in Spark?</b><div class="options">A. Spark never runs jobs<br>B. Transformations are planned and execution generally waits for an action<br>C. Data is always stored in RAM forever<br>D. Every line starts a separate cluster</div><div class="answer"><b>Answer: B — Transformations are planned and execution generally waits for an action.</b></div></div>
+<div class="q"><b>16. Which Spark abstraction includes named columns and a schema?</b><div class="options">A. DataFrame<br>B. Raw Python list<br>C. RDD only<br>D. HDFS block</div><div class="answer"><b>Answer: A — DataFrame.</b></div></div>
+<div class="q"><b>17. What is an RDD?</b><div class="options">A. A distributed, immutable collection of records<br>B. A relational database<br>C. A file format<br>D. A cluster manager</div><div class="answer"><b>Answer: A — A distributed, immutable collection of records.</b></div></div>
+<div class="q"><b>18. Which RDD operation applies a function to every element?</b><div class="options">A. map()<br>B. count()<br>C. collect()<br>D. first()</div><div class="answer"><b>Answer: A — map().</b></div></div>
+<div class="q"><b>19. Which RDD operation can turn one line into multiple words?</b><div class="options">A. flatMap()<br>B. count()<br>C. first()<br>D. take()</div><div class="answer"><b>Answer: A — flatMap().</b></div></div>
+<div class="q"><b>20. Which RDD operation keeps only elements matching a condition?</b><div class="options">A. filter()<br>B. collect()<br>C. reduce()<br>D. saveAsTextFile()</div><div class="answer"><b>Answer: A — filter().</b></div></div>
+<div class="q"><b>21. Which RDD operation combines values with the same key?</b><div class="options">A. reduceByKey()<br>B. map()<br>C. first()<br>D. take()</div><div class="answer"><b>Answer: A — reduceByKey().</b></div></div>
+<div class="q"><b>22. Why should collect() be used carefully on a large RDD?</b><div class="options">A. It transfers all records to the driver and may exhaust driver memory<br>B. It deletes the RDD<br>C. It changes the cluster manager<br>D. It converts data to CSV</div><div class="answer"><b>Answer: A — It transfers all records to the driver and may exhaust driver memory.</b></div></div>
+<div class="q"><b>23. What does VectorAssembler do?</b><div class="options">A. Combines feature columns into one vector column<br>B. Splits a dataset into files<br>C. Evaluates model accuracy<br>D. Creates an HDFS directory</div><div class="answer"><b>Answer: A — Combines feature columns into one vector column.</b></div></div>
+<div class="q"><b>24. What is the purpose of randomSplit([0.8, 0.2])?</b><div class="options">A. Split data into training and testing subsets<br>B. Convert labels to strings<br>C. Sort the dataset<br>D. Create two Spark clusters</div><div class="answer"><b>Answer: A — Split data into training and testing subsets.</b></div></div>
+<div class="q"><b>25. Which method is used to train/f​​it a Spark ML estimator?</b><div class="options">A. fit()<br>B. show()<br>C. collect()<br>D. count()</div><div class="answer"><b>Answer: A — fit().</b></div></div>
+<div class="q"><b>26. Which method is used by a Spark ML transformer/model to transform a DataFrame?</b><div class="options">A. transform()<br>B. fit()<br>C. reduceByKey()<br>D. take()</div><div class="answer"><b>Answer: A — transform().</b></div></div>
+<div class="q"><b>27. Which algorithm is commonly used for predicting a continuous value such as house price?</b><div class="options">A. Linear Regression<br>B. K-Means<br>C. Naive Bayes<br>D. StringIndexer</div><div class="answer"><b>Answer: A — Linear Regression.</b></div></div>
+<div class="q"><b>28. Which algorithm is commonly used for classification?</b><div class="options">A. Logistic Regression<br>B. K-Means only<br>C. Parquet<br>D. VectorAssembler</div><div class="answer"><b>Answer: A — Logistic Regression.</b></div></div>
+<div class="q"><b>29. Which algorithm groups similar records without predefined target labels?</b><div class="options">A. K-Means<br>B. Linear Regression<br>C. Logistic Regression<br>D. StringIndexer</div><div class="answer"><b>Answer: A — K-Means.</b></div></div>
+<div class="q"><b>30. Which metric is commonly used to evaluate regression prediction error?</b><div class="options">A. RMSE<br>B. Accuracy only<br>C. Precision<br>D. Recall</div><div class="answer"><b>Answer: A — RMSE.</b></div></div></div></section>
+<section class="intro"><h2>Final Revision Checklist</h2>
+<ul>
+<li>I can explain the 5 Vs and structured, semi-structured, and unstructured data.</li>
+<li>I can draw Big Data architecture: sources → ingestion → storage → processing → serving.</li>
+<li>I can explain Hadoop, HDFS, NameNode, DataNode, blocks, and replication.</li>
+<li>I can explain YARN components and the MapReduce execution flow.</li>
+<li>I can explain SparkSession, driver, executors, transformations, actions, lazy evaluation, partitions, and shuffle.</li>
+<li>I can create RDDs and use map, filter, flatMap, distinct, union, reduceByKey, collect, count, and take.</li>
+<li>I can compare RDDs and DataFrames.</li>
+<li>I can prepare ML features using VectorAssembler and split data into training and testing sets.</li>
+<li>I can train classification, regression, and clustering models using Spark MLlib.</li>
+<li>I can explain ML Pipelines and evaluate models using suitable metrics.</li>
+<li>I can compare CSV, JSON, Avro, Parquet, and ORC.</li>
+<li>I can explain ETL vs ELT, data quality, and data governance.</li>
+<li>I can answer the 30 MCQs and explain why each correct option is correct.</li>
+</ul>
+<p class="small">Classroom reference: examples and commands are simplified for learning. Exact commands, defaults, and configuration options can vary by software version and environment.</p></section>
+</main>
+<footer>Big Data • Hadoop • PySpark • RDD • Machine Learning Classroom Notes</footer>
+<script>
+function toggleAnswers(){
+ const root=document.body;
+ const btn=document.getElementById('toggle');
+ const on=root.classList.toggle('showall');
+ btn.textContent=on?'Hide all answers':'Show all answers';
+}
+document.querySelectorAll('.q').forEach(q=>{
+ const ans=q.querySelector('.answer');
+ const b=document.createElement('button');
+ b.className='secondary'; b.textContent='Reveal answer'; b.style.marginTop='5px'; b.style.fontSize='.88rem'; b.style.padding='6px 10px';
+ b.onclick=()=>{const show=ans.style.display!=='block';ans.style.display=show?'block':'none';b.textContent=show?'Hide answer':'Reveal answer';};
+ q.appendChild(b);
+});
+</script>
+</body>
+</html>
